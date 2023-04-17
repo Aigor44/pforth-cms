@@ -96,8 +96,7 @@ void CreateDicEntry( ExecToken XT, const ForthStringPtr FName, uint32 Flags )
         gCurrentDictionary->dic_HeaderPtr.Byte[i+1] = __etoa( FName[i+1] ); /* EBCDIC to ASCII conversion */
 #elif __CMS__
     size_t NameLen = (size_t) * FName;
-    int i;
-    for ( i = 0 ; i < NameLen ; i++ )
+    for ( int i = 0 ; i < NameLen ; i++ )
         gCurrentDictionary->dic_HeaderPtr.Byte[i+1] = __etoa( FName[i+1] ); /* EBCDIC to ASCII conversion */
 #endif
     gCurrentDictionary->dic_HeaderPtr.Byte += (*FName)+1;
@@ -442,13 +441,11 @@ cell ffFindNFA( const ForthString * WordName, const ForthString ** NFAPtr )
     int32               Searching = TRUE;
     cell                Result    = 0;
 /*
-//LMfprintf( stderr, "ffFindNFA: gVarContext = 0x%x, WordLen = %d, SMUDGE=%c, WordName = ", gVarContext, WordLen, ( * NameField & FL
-AG_SMUDGE ) ? 'S' : 'V' );
+//LMfprintf( stderr, "ffFindNFA: gVarContext = 0x%x, WordLen = %d, SMUDGE=%c, WordName = ", gVarContext, WordLen, ( * NameField & FLAG_SMUDGE ) ? 'S' : 'V' );
 //LMfor ( int i = 0 ; i < WordLen ; i++ )
 //LM    fputc( WordName[i+1], stderr );
 //LMfprintf( stderr, "\n" );
 */
-    NameField = gVarContext;
     do {
         int8 NameLen  = (uint8) ( (uint32) (*NameField) & MASK_NAME_SIZE );
 #ifdef __SYSC__
@@ -457,8 +454,7 @@ AG_SMUDGE ) ? 'S' : 'V' );
             NameChar[i] = __atoe( NameField[i+1] ); /* ASCII to EBCDIC conversion */
 #elif __CMS__
         char NameChar[40];
-        int i;
-        for ( i = 0 ; i < NameLen ; i++ )
+        for ( int i = 0 ; i < NameLen ; i++ )
             NameChar[i] = __atoe( NameField[i+1] ); /* ASCII to EBCDIC conversion */
 #else
         const char * NameChar = NameField + 1;
@@ -756,8 +752,8 @@ void FindAndCompile( const char *theWord )
         /* converting the number digits from EBCDIC to ASCII */
         char asciiWord[256];
         asciiWord[0] = theWord[0];
-        size_t i, lim = (size_t) * theWord;
-        for ( i = 0 ; i < lim ; i++ )
+        size_t lim = (size_t) * theWord;
+        for ( size_t i = 0 ; i < lim ; i++ )
             asciiWord[i+1] = __etoa( theWord[i+1] ); /* EBCDIC to ASCII conversion */
         PUSH_DATA_STACK( asciiWord );   /* Push text of number */
 #else

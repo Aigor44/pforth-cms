@@ -1,1 +1,1 @@
--o dd:out - -S -ansi -DPF_SUPPORT_FP -DPF_STATIC_DIC
+-o dd:out - -S -std=c99 -DPF_SUPPORT_FP -DPF_STATIC_DIC

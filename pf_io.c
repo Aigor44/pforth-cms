@@ -23,7 +23,7 @@
 #ifdef __SYSC__
 #    include <machine/atoe.h>
 #endif
- 
+
 #ifdef __CMS__
 /*
  * Bijective EBCDIC (character set IBM-1047) to US-ASCII table: This table is
@@ -63,7 +63,7 @@ const unsigned char ebcdic2ascii[256] = {
     0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, /* f0-ff: */
     0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x9f /* 0123456789...... */
 };
- 
+
 /*
  * The US-ASCII to EBCDIC (character set IBM-1047) table: This table is
  * bijective (no ambiguous or duplicate characters)
@@ -102,7 +102,7 @@ const unsigned char ascii2ebcdic[256] = {
     0x8c, 0x49, 0xcd, 0xce, 0xcb, 0xcf, 0xcc, 0xe1, /* f0-ff: */
     0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf /* ................ */
 };
- 
+
 unsigned int __atoe(unsigned char c) { return ( c < 256 ) ? ascii2ebcdic[c] : 0; };
 unsigned int __etoa(unsigned char c) { return ( c < 256 ) ? ebcdic2ascii[c] : 0; };
 #endif
@@ -125,15 +125,17 @@ void ioEmit( char c )
         gCurrentTask->td_OUT++;
     } /*i*/
 }
- 
+
 void ioType( const char *s, int32 n )
 {
- int32 i;
- 
- for( i=0; i<n; i++)
- {
-  ioEmit ( *s++ );
- }
+    for ( int32 i = 0 ; i < n ; ++i )
+        ioEmit(*s++);
+}
+
+void ioTypeA2E( const char *s, int32 n )
+{
+    for ( int32 i = 0 ; i < n ; ++i )
+        ioEmit(__atoe(*s++));
 }
  
 /***************************************************************
