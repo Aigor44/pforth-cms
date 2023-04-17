@@ -317,7 +317,11 @@ int32 pfIncludeFile( const char *FileName )
  
 void pfMessage( const char *CString )
 {
+#ifdef __CMS__
+    ioTypeE( CString, pfCStringLength(CString) );
+#else
     ioType( CString, pfCStringLength(CString) );
+#endif
 }
  
 /**************************************************************************
