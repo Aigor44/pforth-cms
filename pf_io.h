@@ -138,8 +138,11 @@ cell ioAccept( char *Target, cell n1, FileStream *Stream );
 cell ioKey( void);
 void ioEmit( char c );
 void ioType( const char *s, int32 n);
-void ioTypeA2E( const char *s, int32 n);
- 
+#ifdef __CMS__
+void ioEmitE( char c );
+void ioTypeE( const char *s, int32 n);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

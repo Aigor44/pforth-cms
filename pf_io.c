@@ -114,6 +114,8 @@ void ioEmit( char c )
 {
 #ifdef __SYSC_ASCIIOUT__
     int32 Result = sdTerminalOut( __atoe( c ) );  /* ASCII to EBCDIC conversion */
+#elif __CMS__
+    int32 Result = sdTerminalOut( __atoe( c ) );  /* ASCII to EBCDIC conversion */
 #else
     int32 Result = sdTerminalOut( c );
 #endif
@@ -133,10 +135,22 @@ void ioType( const char *s, int32 n )
 }
 
 #ifdef __CMS__
-void ioTypeA2E( const char *s, int32 n )
+void ioEmitE( char c )
+{
+    int32 Result = sdTerminalOut( c );
+    if ( Result < 0 ) EXIT( 1 );
+    if ( c == '\n' ) {
+        gCurrentTask->td_OUT = 0;
+        sdTerminalFlush();
+    } else {
+        gCurrentTask->td_OUT++;
+    } /*i*/
+}
+
+void ioTypeE( const char *s, int32 n )
 {
     for ( int32 i = 0 ; i < n ; ++i )
-        ioEmit(__atoe(*s++));
+        ioEmitE(*s++);
 }
 #endif
  

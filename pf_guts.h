@@ -549,8 +549,12 @@ extern cell  gVarReturnCode; /* Returned to caller of Forth, eg. UNIX shell. */
 /***************************************************************
 ** I/O related macros
 ***************************************************************/
- 
+
+#ifdef __CMS__
+#define EMIT(c)  ioEmitE(c)
+#else
 #define EMIT(c)  ioEmit(c)
+#endif
 #define EMIT_CR  EMIT('\n');
  
 #define DBUG(x)  /* PRT(x) */
