@@ -1,0 +1,19 @@
+/* rexx */
+ 
+address cms 'gcc pf_cglue c d ( parm pforth cms'
+address cms 'gcc pf_clib  c d ( parm pforth cms'
+address cms 'gcc pf_core  c d ( parm pforth cms'
+address cms 'gcc pf_inner c d ( parm pforth cms'
+address cms 'gcc pf_io    c d ( parm pforth cms'
+address cms 'gcc pf_main  c d ( parm pforth cms'
+address cms 'gcc pf_mem   c d ( parm pforth cms'
+address cms 'gcc pf_save  c d ( parm pforth cms'
+address cms 'gcc pf_text  c d ( parm pforth cms'
+address cms 'gcc pf_words c d ( parm pforth cms'
+address cms 'gcc pfcompil c d ( parm pforth cms'
+address cms 'gcc pfcustom c d ( parm pforth cms'
+ 
+ 
+address cms 'global txtlib gcclib'
+address cms 'load pf_cglue pf_clib pf_core pf_inner pf_io pf_main pf_mem pf_save pf_text pf_words pfcompil pfcustom ( clear'
+address cms 'genmod pforth module d'
