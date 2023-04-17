@@ -1,6 +1,7 @@
 #!/bin/bash
  
-CC="gcc -m32"
+  CC="gcc -m31"
+# CC="gcc -m32"
 
 # CFLAGS="-g -O0 -DPF_SUPPORT_FP -DPF_STATIC_DIC -D__CMS__"
   CFLAGS="-g -O0 -DPF_SUPPORT_FP -DPF_STATIC_DIC"

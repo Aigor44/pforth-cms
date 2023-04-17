@@ -132,11 +132,13 @@ void ioType( const char *s, int32 n )
         ioEmit(*s++);
 }
 
+#ifdef __CMS__
 void ioTypeA2E( const char *s, int32 n )
 {
     for ( int32 i = 0 ; i < n ; ++i )
         ioEmit(__atoe(*s++));
 }
+#endif
  
 /***************************************************************
 ** Return single character from input device, always keyboard.
