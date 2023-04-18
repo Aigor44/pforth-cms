@@ -22,6 +22,8 @@ On VM/370:
 
 You can copy ./csrc/pforth.vmarc to VM/370 using IND$FILE
 
+![](./images/pforth-vm370-11.png)
+
 I use the disk D as a scratch development disk so I do as follow.
     
     ERASE * * D1
