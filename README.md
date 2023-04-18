@@ -28,7 +28,7 @@ I use the disk D as a scratch development disk so I do as follow.
     
     ERASE * * D1
     VMARC UNPACK PFORTH VMARC A * * D
-    BUILD4th
+    BUILD4TH
     
 If the build is successful you shoud have
     
