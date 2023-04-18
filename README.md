@@ -8,7 +8,13 @@ Recently I rediscovered the sources and adapted the port to VM/370's GCCCMS comp
 ------
 
 ### Images
+
+PFORTH-CMS running inside VM/370 Community Edition.
+
 ![](./images/pforth-vm370-09.png)
+
+xlist of the CMS disk with the source code and the compiled PFORTH.MODULE
+
 ![](./images/pforth-vm370-10.png)
 
 
