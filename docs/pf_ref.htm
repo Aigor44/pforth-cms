@@ -1,0 +1,1333 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Phil Burk">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (Win95; I) [Netscape]">
+   <META NAME="Description" CONTENT="Reference Manual for pForth, a Portable ANSI Forth environment written in ANSI 'C'.">
+   <META NAME="KeyWords" CONTENT="pForth, Forth, Reference, portable, ANS">
+   <TITLE> pForth Reference</TITLE>
+</HEAD>
+<BODY>
+
+<CENTER>
+<H1>
+
+<HR WIDTH="100%"></H1></CENTER>
+
+<CENTER>
+<H1>
+pForth Reference Manual</H1></CENTER>
+
+<CENTER>
+<HR WIDTH="100%"></CENTER>
+
+<H3>
+pForth - a Portable ANSI style Forth written in ANSI 'C'.&nbsp; <B>Last
+updated: August 20th, 1998 V20</B></H3>
+by <A HREF="mailto:philburk@softsynth.com">Phil Burk</A> with Larry Polansky,
+David Rosenboom. Special thanks to contributors Darren Gibbs, Herb Maeder,
+Gary Arakaki, Mike Haas.
+
+<P>PForth source code is freely available.&nbsp; The author is available
+for customization of pForth, porting to new platforms, or developing pForth
+applications on a contractual basis.&nbsp; If interested, contact&nbsp;
+Phil Burk at <A HREF="mailto:philburk@softsynth.com">philburk@softsynth.com</A>
+
+<P>Back to <A HREF="pforth.html">pForth Home Page</A>
+<CENTER>
+<H2>
+LEGAL NOTICE</H2></CENTER>
+The pForth software code is dedicated to the public domain, and any third
+party may reproduce, distribute and modify the pForth software code or
+any derivative works thereof without any compensation or license. The pForth
+software code is provided on an "as is" basis without any warranty of any
+kind, including, without limitation, the implied warranties of merchantability
+and fitness for a particular purpose and their equivalents under the laws
+of any jurisdiction.
+
+<P>
+<HR WIDTH="100%">
+<H2>
+Table of Contents</H2>
+
+<UL>
+<LI>
+<A HREF="#What is pForth">What is pForth?</A></LI>
+
+<LI>
+<A HREF="#Compiling pForth for your System">Compiling pForth for your System</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Description of Source Files">Description of Source Files</A></LI>
+</UL>
+
+<LI>
+<A HREF="#Running pForth">Running pForth</A></LI>
+
+<LI>
+<A HREF="#ANSI Compliance">ANSI Compliance</A></LI>
+
+<LI>
+<A HREF="#pForth Special Features">pForth Special Features</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Compiling from a File">Compiling from a File - INCLUDE</A></LI>
+
+<LI>
+<A HREF="#Saving Precompiled Dictionaries">Saving Precompiled Dictionaries</A></LI>
+
+<LI>
+<A HREF="#Recompiling Code - ANEW INCLUDE?">Recompiling Code - ANEW INCLUDE?</A></LI>
+
+<LI>
+<A HREF="#Customising FORGET with [FORGET]">Customising Forget with [FORGET]</A></LI>
+
+<LI>
+<A HREF="#Smart Conditionals">Smart Conditionals</A></LI>
+
+<LI>
+<A HREF="#Development Tools">Development Tools</A></LI>
+
+<UL>
+<LI>
+<A HREF="#WORDS.LIKE">WORDS.LIKE</A></LI>
+
+<LI>
+<A HREF="#FILE?">FILE?</A></LI>
+
+<LI>
+<A HREF="#SEE">SEE</A></LI>
+
+<LI>
+<A HREF="#Single Step Trace">Single Step Trace and Debug</A></LI>
+</UL>
+
+<LI>
+<A HREF="#Conditional Compilation [IF] [ELSE] [THEN]">Conditional Compilation
+- [IF] [ELSE] [THEN]</A></LI>
+
+<LI>
+<A HREF="#Miscellaneous Handy Words">Miscellaneous Handy Words</A></LI>
+
+<LI>
+<A HREF="#Local Variables { foo --}">Local Variables { foo -- }</A></LI>
+
+<LI>
+<A HREF="#'C' like Structures. :STRUCT">'C' like Structures. :STRUCT</A></LI>
+
+<LI>
+<A HREF="#Vectorred Execution - DEFER">Vectorred execution - DEFER</A></LI>
+
+<LI>
+<A HREF="#Floating Point">Floating Point</A></LI>
+</UL>
+
+<LI>
+<A HREF="#pForth Design">pForth Design</A></LI>
+
+<UL>
+<LI>
+<A HREF="#'C' kernel">'C' kernel</A></LI>
+
+<LI>
+<A HREF="#Dictionary Structures">Dictionary Structures</A></LI>
+</UL>
+
+<LI>
+<A HREF="#Custom Compilation of pForth">Custom Compilation of pForth</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Compiler Options">Compiler Options</A></LI>
+
+<LI>
+<A HREF="#Building pForth on Supported Hosts">Building pForth on Supported
+Hosts</A></LI>
+
+<LI>
+<A HREF="#Compiling for Embedded Systems">Compiling for Embedded Systems</A></LI>
+
+<LI>
+<A HREF="#Linking with Custom 'C' Functions">Linking with Custom 'C' Functions</A></LI>
+
+<LI>
+<A HREF="#Minimal Executables - CLONE">Minimal executables. CLONE</A></LI>
+
+<LI>
+<A HREF="#Testing your Compiled pForth">Testing your Compiled pForth</A></LI>
+</UL>
+</UL>
+
+<HR WIDTH="100%">
+<H2>
+<A NAME="What is pForth"></A>What is pForth?</H2>
+PForth is an ANSI style Forth designed to be portable across many platforms.
+The 'P' in pForth stands for "Portable". PForth is based on a Forth kernel
+written in ANSI standard 'C'.
+<H3>
+What is Forth?</H3>
+Forth is a stack based language invented by astronomer Charles Moore for
+controlling telescopes. Forth is an interactive language. You can enter
+commands at the keyboard and have them be immediately executed, similar
+to BASIC or LISP. Forth has a dictionary of words that can be executed
+or used to construct new words that are then added to the dictionary. Forth
+words operate on a data stack that contains numbers and addresses.
+
+<P>To learn more about Forth, see the <A HREF="pf_tut.htm">Forth Tutorial</A>.
+<H3>
+The Origins of pForth</H3>
+PForth began as a JSR threaded 68000 Forth called HForth that was used
+to support HMSL, the Hierarchical Music Specification Language. HMSL was
+a music experimentation language developed by Phil Burk, Larry Polansky
+and David Rosenboom while working at the Mills College Center for Contemporary
+Music. Phil moved from Mills to the 3DO Company where he ported the Forth
+kernel to 'C'. It was used at 3DO as a tool for verifying ASIC design and
+for bringing up new hardware platforms. At 3DO, the Forth had to run on
+many systems including SUN, SGI, Macintosh, PC, Amiga, the 3DO ARM based
+Opera system, and the 3DO PowerPC based M2 system. PForth is now being
+developed for use at CagEnt, a spinoff of 3DO.
+<H3>
+pForth Design Goals</H3>
+PForth has been designed with portability as the primary design goal. As
+a result, pForth avoids any fancy UNIX calls. pForth also avoids using
+any clever and original ways of constructing the Forth dictionary. It just
+compiles its kernel from ANSI compatible 'C' code then loads ANS compatible
+Forth code to build the dictionary. Very boring but very likely to work
+on almost any platform.
+
+<P>The dictionary files that can be saved from pForth are almost host independant.
+They can be compiled on one processor, and then run on another processor.
+as long as the endian-ness is the same. In other words, dictionaries built
+on a PC will only work on a PC. Dictionaries built on almost any other
+computer will work on almost any other computer.
+
+<P>PForth can be used to bring up minimal hardware systems that have very
+few system services implemented. It is possible to compile pForth for systems
+that only support routines to send and receive a single character. If malloc()
+and free() are not available, equivalent functions are available in standard
+'C' code. If file I/O is not available, the dictionary can be saved as
+a static data array in 'C' source format on a host system. The dictionary
+in 'C' source form is then compiled with a custom pForth kernel to avoid
+having to read the dictionary from disk.
+
+<P>
+<HR WIDTH="100%">
+<H2>
+<A NAME="Compiling pForth for your System"></A>Compiling pForth for your
+System</H2>
+The process of building pForth involves several steps. This process is
+typically handled automatically by the Makefile or IDE Project.
+<OL>
+<LI>
+Compile the 'C' based pForth kernel called "pforth".</LI>
+
+<LI>
+Execute "pforth" with the -i option to build the dictionary from scratch.</LI>
+
+<LI>
+Compile the "system.fth" file which will add all the top level Forth words.</LI>
+
+<LI>
+Save the compiled dictionary as "pforth.dic".</LI>
+
+<LI>
+The next time you run pforth, the precompiled pforth.dic file will be loaded
+automatically.</LI>
+</OL>
+
+<H3>
+UNIX</H3>
+A Makefile has been provided that should work on most UNIX platforms.
+<OL>
+<LI>
+cd to top directory of pForth</LI>
+
+<LI>
+Enter: make all</LI>
+</OL>
+
+<H3>
+Macintosh</H3>
+A precompiled PPC binary for pForth is provided. A Code Warrior Project
+has been provided that will rebuild pForth for PPC if desired. Alternatively
+you could use MPW to make pForth as an MPW Tool.&nbsp; Make sure that you
+provide at least 1 Meg of heap space. If you build for 68K, make sure you
+use 32 bit integers, and select the appropriate libraries.&nbsp; To rebuild
+pForth for PPC:
+<OL>
+<LI>
+Open pForthCW</LI>
+
+<LI>
+Make target "pForthApp"</LI>
+
+<LI>
+Run pForthApp</LI>
+
+<LI>
+Enter "-i" as Argumant in starting dialog to initialize dictionary.</LI>
+
+<LI>
+To compile system.fth, enter "loadsys".</LI>
+
+<LI>
+Quit pForth using File menu.</LI>
+
+<LI>
+From now on, just double click pForthApp icon to run pForth.</LI>
+</OL>
+
+<H3>
+PC Compatible</H3>
+A precompiled binary for pForth is provided. <FONT COLOR="#000000">To rebuild
+under Windows NT or Win95 using Microsoft Visual C++:</FONT>
+<OL>
+<LI>
+<FONT COLOR="#000000">Double click on the pForth.dsw icon in "pForth\pcbuild".</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">Select the "MakeDic" configuration.</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">Select "Rebuild All" from the Build menu.This will
+build the pForth.exe file.</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">Run the app with CTRL-F5 which will build the pforth.dic
+file.</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">Select the "Release" configuration.</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">Run the app with CTRL-F5 which will drop you into
+Forth.</FONT></LI>
+
+<LI>
+<FONT COLOR="#000000">From now on, to run pForth, just double click on
+the pforth.exe file.</FONT></LI>
+</OL>
+
+<H3>
+<A NAME="Description of Source Files"></A>Description of Source Files</H3>
+
+<H4>
+Forth Source</H4>
+
+<PRE>ansilocs.fth&nbsp;&nbsp;&nbsp; = support for ANSI (LOCAL) word
+c_struct.fth&nbsp;&nbsp;&nbsp; = 'C' like data structures
+case.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = CASE OF ENDOF ENDCASE
+catch.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = CATCH and THROW
+condcomp.fth&nbsp;&nbsp;&nbsp; = [IF] [ELSE] [THEN] conditional compiler
+filefind.fth&nbsp;&nbsp;&nbsp; = FILE?
+floats.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = floating point support
+forget.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = FORGET [FORGET] IF.FORGOTTEN
+loadp4th.fth&nbsp;&nbsp;&nbsp; = loads basic dictionary
+locals.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = { } style locals using (LOCAL)
+math.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = misc math words
+member.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = additional 'C' like data structure support
+misc1.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = miscellaneous words
+misc2.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = miscellaneous words
+numberio.fth&nbsp;&nbsp;&nbsp; = formatted numeric input/output
+private.fth&nbsp;&nbsp;&nbsp;&nbsp; = hide low level words
+quit.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = QUIT EVALUATE INTERPRET in high level
+smart_if.fth&nbsp;&nbsp;&nbsp; = allows conditionals outside colon definition
+see.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = Forth "disassembler".&nbsp; Eg.&nbsp; SEE SPACES
+strings.fth&nbsp;&nbsp;&nbsp;&nbsp; = string support
+system.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = bootstraps pForth dictionary
+trace.fth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = single step trace for debugging</PRE>
+
+<H4>
+'C' Source</H4>
+csrc/pfcompil.c = pForth compiler support
+<BR>csrc/pfcustom.c = example of 'C' functions callable from pForth
+<BR>csrc/pfinnrfp.h = float extensions to interpreter
+<BR>csrc/pforth.h = include this in app that embeds pForth
+<BR>csrc/pf_cglue.c = glue for pForth calling 'C'
+<BR>csrc/pf_clib.c = replacement routines for 'C' stdlib
+<BR>csrc/pf_core.c = primary words called from 'C' app that embeds pForth
+<BR>csrc/pf_float.h = defines PF_FLOAT, and the floating point math functions
+such as fp_sin
+<BR>csrc/pf_inner.c = inner interpreter
+<BR>csrc/pf_guts.h = primary include file, define structures
+<BR>csrc/pf_io.c = input/output
+<BR>csrc/pf_main.c = basic application for standalone pForth
+<BR>csrc/pf_mem.c = optional malloc() implementation
+<BR>csrc/pf_save.c = save and load dictionaries
+<BR>csrc/pf_text.c = string tools, error message text
+<BR>csrc/pf_words.c = miscellaneous pForth words implemented
+<BR>
+<HR WIDTH="100%">
+<H2>
+<A NAME="Running pForth"></A>Running pForth</H2>
+PForth can be run from a shell or by double clicking on its icon, depending
+on the system you are using. The execution options for pForth are described
+assuming that you are running it from a shell.
+
+<P>Usage:
+<UL>
+<PRE>pforth [-i] [-dDictionaryFilename] [SourceFilename]</PRE>
+</UL>
+
+<DT>
+-i</DT>
+
+<DD>
+Initialize pForth by building dictionary from scratch. Used when building
+pForth or when debugging pForth on new systems.</DD>
+
+<DT>
+-dDictionaryFilename</DT>
+
+<DD>
+Specify a custom dictionary to be loaded in place of the default "pforth.dic".
+For example:</DD>
+
+<UL>
+<UL>
+<PRE>pforth -dgame.dic</PRE>
+</UL>
+</UL>
+
+<DT>
+SourceFilename</DT>
+
+<DD>
+A Forth source file can be automatically compiled by passing its name to
+pForth. This is useful when using Forth as an assembler or for automated
+hardware testing. Remember that the source file can compile code and execute
+it all in the same file.</DD>
+
+<H4>
+Quick Verification of pForth</H4>
+To verify that PForth is working, enter:
+<UL>
+<PRE>3 4 + .</PRE>
+</UL>
+It should print "7 ok". Now enter:
+<UL>WORDS</UL>
+You should see a long list of all the words in the pForth dictionary. Don't
+worry. You won't need to learn all of these.&nbsp; More tests are described
+in the README.txt file.
+
+<P>
+<HR WIDTH="100%">
+<H2>
+<A NAME="ANSI Compliance"></A>ANSI Compliance</H2>
+This Forth is intended to be ANS compatible. I will not claim that it is
+compatible until more people bang on it. If you find areas where it deviates
+from the standard, please let me know.
+
+<P>Word sets supported include:
+<UL>
+<LI>
+FLOAT</LI>
+
+<LI>
+LOCAL with support for { lv1 lv2 | lv3 -- } style locals</LI>
+
+<LI>
+EXCEPTION but standard throw codes not implemented</LI>
+
+<LI>
+FILE ACCESS</LI>
+
+<LI>
+MEMORY ALLOCATION</LI>
+</UL>
+Here are the areas that I know are not compatible:
+
+<P>The ENVIRONMENT queries are not implemented.
+
+<P>Word sets NOT supported include:
+<UL>
+<LI>
+BLOCK - a matter of religion</LI>
+
+<LI>
+SEARCH ORDER - coming soon</LI>
+
+<LI>
+PROGRAMMING TOOLS - only has .S ? DUMP WORDS BYE</LI>
+
+<LI>
+STRING - only has CMOVE CMOVE> COMPARE</LI>
+
+<LI>
+DOUBLE NUMBER - but cell is 32 bits</LI>
+</UL>
+
+<HR WIDTH="100%">
+<H2>
+<A NAME="pForth Special Features"></A>pForth Special Features</H2>
+These features are not part of the ANS standard for Forth.&nbsp; They have
+been added to assist developers.
+<H3>
+<A NAME="Compiling from a File"></A>Compiling from a File</H3>
+Use INCLUDE to compile source code from a file:
+<UL>
+<PRE>INCLUDE filename</PRE>
+</UL>
+You can nest calls to INCLUDE. INCLUDE simply redirects Forth to takes
+its input from the file instead of the keyboard so you can place any legal
+Forth code in the source code file.
+<H3>
+<A NAME="Saving Precompiled Dictionaries"></A>Saving Precompiled Dictionaries</H3>
+Use SAVE-FORTH save your precompiled code to a file. To save the current
+dictionary to a file called "custom.dic", enter:
+<UL>
+<PRE>c" custom.dic" SAVE-FORTH</PRE>
+</UL>
+You can then leave pForth and use your custom dictionary by enterring:
+<UL>
+<PRE>pforth -dcustom.dic</PRE>
+</UL>
+On icon based systems, you may wish to name your custom dictionary "pforth.dic"
+so that it will be loaded automatically.
+
+<P>Be careful that you do not leave absolute addresses stored in the dictionary
+because they will not work when you reload pForth at a different address.
+Use A! to store an address in a variable in a relocatable form and A@ to
+get it back if you need to.
+<UL>
+<PRE>VARIABLE DATA-PTR
+CREATE DATA 100 ALLOT
+DATA DATA-PTR !&nbsp;&nbsp;&nbsp; \ storing absolute address!&nbsp; BAD
+DATA DATA-PTR A!&nbsp;&nbsp; \ storing relocatable address!&nbsp; GOOD
+DATA-PTR A@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \ fetch relocatable address</PRE>
+</UL>
+
+<H3>
+<A NAME="Recompiling Code - ANEW INCLUDE?"></A>Recompiling Code - ANEW
+INCLUDE?</H3>
+When you are testing a file full of code, you will probably recompile many
+times. You will probably want to FORGET the old code before loading the
+new code. You could put a line at the beginning of your file like this:
+<UL>
+<PRE>FORGET XXXX-MINE&nbsp;&nbsp;&nbsp;&nbsp; : XXXX-MINE ;</PRE>
+</UL>
+This would automatically FORGET for you every time you load. Unfortunately,
+you must define XXXX-MINE before you can ever load this file. We have a
+word that will automatically define a word for you the first time, then
+FORGET and redefine it each time after that. It is called ANEW and can
+be found at the beginning of most Forth source files. We use a prefix of
+TASK- followed by the filename just to be consistent. This TASK-name word
+is handy when working with INCLUDE? as well. Here is an example:
+<UL>
+<PRE>\ Start of file
+INCLUDE? TASK-MYTHING.FTH MYTHING.FTH
+ANEW TASK-THISFILE.FTH
+\ the rest of the file follows...</PRE>
+</UL>
+Notice that the INCLUDE? comes before the call to ANEW so that we don't
+FORGET MYTHING.FTH every time we recompile.
+
+<P>FORGET allows you to get rid of code that you have already compiled.
+This is an unusual feature in a programming language. It is very convenient
+in Forth but can cause problems. Most problems with FORGET involve leaving
+addresses that point to the forgotten code that are not themselves forgotten.
+This can occur if you set a deferred system word to your word then FORGET
+your word. The system word which is below your word in the dictionary is
+pointing up to code that no longer exists. It will probably crash if called.
+(See discussion of DEFER below.) Another problem is if your code allocates
+memory, opens files, or opens windows. If your code is forgotten you may
+have no way to free or close these thing. You could also have a problems
+if you add addresses from your code to a table that is below your code.
+This might be a jump table or data table.
+
+<P>Since this is a common problem we have provided a tool for handling
+it. If you have some code that you know could potentially cause a problem
+if forgotten, then write a cleanup word that will eliminate the problem.
+This word could UNdefer words, free memory, etc. Then tell the system to
+call this word if the code is forgotten. Here is how:
+<UL>
+<PRE>: MY.CLEANUP&nbsp; ( -- , do whatever )
+&nbsp;&nbsp;&nbsp; MY-MEM @ FREE DROP
+&nbsp;&nbsp;&nbsp; 0 MY-MEM !
+;
+IF.FORGOTTEN&nbsp; MY.CLEANUP</PRE>
+</UL>
+IF.FORGOTTEN creates a linked list node containing your CFA that is checked
+by FORGET. Any nodes that end up above HERE (the Forth pointer to the top
+of the dictionary) after FORGET is done are executed.
+<H3>
+<A NAME="Customising FORGET with [FORGET]"></A>Customising FORGET with
+[FORGET]</H3>
+Sometimes, you may need to extend the way that FORGET works. FORGET is
+not deferred, however, because that could cause some real problems. Instead,
+you can define a new version of [FORGET] which is searched for and executed
+by FORGET. You MUST call [FORGET] from your program or FORGET will not
+actually FORGET. Here is an example.
+<UL>
+<PRE>: [FORGET]&nbsp; ( -- , my version )
+&nbsp;&nbsp;&nbsp; ." Change things around!" CR
+&nbsp;&nbsp;&nbsp; [FORGET]&nbsp; ( must be called )
+&nbsp;&nbsp;&nbsp; ." Now put them back!" CR
+;
+: FOO ." Hello!" ;
+FORGET FOO&nbsp; ( Will print "Change things around!", etc.)</PRE>
+</UL>
+This is recommended over redefining FORGET because words like ANEW that
+call FORGET will now pick up your changes.
+<H3>
+<A NAME="Smart Conditionals"></A>Smart Conditionals</H3>
+In pForth, you can use IF THEN DO LOOP and other conditionals outside of
+colon definitions. PForth will switch temporarily into the compile state,
+then automatically execute the conditional code. (Thank you Mitch Bradley)
+For example, just enter this at the keyboard.
+<UL>
+<PRE>10 0 DO I . LOOP</PRE>
+</UL>
+
+<H3>
+<A NAME="Development Tools"></A>Development Tools</H3>
+
+<H4>
+<A NAME="WORDS.LIKE"></A>WORDS.LIKE</H4>
+If you cannot remember the exact name of a word, you can use WORDS.LIKE
+to search the dictionary for all words that contain a substring. For an
+example, enter:
+<UL>
+<PRE>WORDS.LIKE&nbsp;&nbsp; FOR
+WORDS.LIKE&nbsp;&nbsp; EMIT</PRE>
+</UL>
+
+<H4>
+<A NAME="FILE?"></A>FILE?</H4>
+You can use FILE? to find out what file a word was compiled from. If a
+word was defined in multiple files then it will list each file. The execution
+token of each definition of the word is listed on the same line.
+<UL>FILE? IF
+<BR>FILE? AUTO.INIT</UL>
+
+<H4>
+<A NAME="SEE"></A>SEE</H4>
+You can use SEE to "disassemble" a word in the pForth dictionary. SEE will
+attempt to print out Forth source in a form that is similar to the source
+code. SEE will give you some idea of how the word was defined but is not
+perfect. Certain compiler words, like BEGIN and LITERAL, are difficult
+to disassemble and may not print properly. For an example, enter:
+<UL>
+<PRE>SEE SPACES
+SEE WORDS</PRE>
+</UL>
+
+<H4>
+<A NAME="Single Step Trace"></A>Single Step Trace and Debug</H4>
+It is often useful to proceed step by step through your code when debugging.&nbsp;
+PForth provides a simple single step trace facility for this purpose.&nbsp;
+Here is an example of using TRACE to debug a simple program.&nbsp; Enter
+the following program:
+<BR>&nbsp;
+<UL>
+<PRE>: SQUARE ( n -- n**2 )
+&nbsp;&nbsp;&nbsp; DUP&nbsp; *
+;
+: TSQ&nbsp; ( n -- , test square )
+&nbsp;&nbsp;&nbsp; ." Square of "&nbsp;&nbsp; DUP&nbsp;&nbsp; .
+&nbsp;&nbsp;&nbsp; ." is "&nbsp;&nbsp; SQUARE&nbsp;&nbsp; .&nbsp;&nbsp; CR
+;</PRE>
+</UL>
+Even though this program should work, let's pretend it doesn't and try
+to debug it.&nbsp; Enter:
+<UL>7&nbsp; TRACE&nbsp; TSQ</UL>
+You should see:
+<UL>
+<PRE>7 trace tsq
+&lt;&lt;&nbsp; TSQ +0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; (.")&nbsp; Square of "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+The "TSQ +0" means that you are about to execute code at an offset of "+0"
+from the beginning of TSQ.&nbsp; The &lt;10:1> means that we are in base
+10, and that there is 1 item on the stack, which is shown to be "7". The
+(.") is the word that is about to be executed.&nbsp; (.") is the word that
+is compiled when use use .".&nbsp; Now to single step, enter:
+<UL>
+<PRE>s</PRE>
+</UL>
+You should see:
+<UL>
+<PRE>Square of
+&lt;&lt;&nbsp; TSQ +16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; DUP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+
+<PRE>The "Square os" was printed by (."). We can step multiple times using the "sm" command. Enter:</PRE>
+
+<UL>
+<PRE>3 sm</PRE>
+</UL>
+You should see:
+<UL>
+<PRE>&lt;&lt;&nbsp; TSQ +20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:2> 7 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >> 7&nbsp;
+&lt;&lt;&nbsp; TSQ +24&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; (.")&nbsp; is "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >> is&nbsp;
+&lt;&lt;&nbsp; TSQ +32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; SQUARE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+The "7" after the ">>" was printed by the . word. If we entered "s", we
+would step over the SQUARE word. If we want to dive down into SQUARE, we
+can enter:
+<UL>
+<PRE>sd</PRE>
+</UL>
+
+<PRE>You should see:</PRE>
+
+<UL>
+<PRE>&lt;&lt;&nbsp; SQUARE +0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp;&nbsp;&nbsp; DUP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+
+<PRE>To step once in SQUARE, enter:</PRE>
+
+<UL>
+<PRE>s</PRE>
+</UL>
+You should see:
+<UL>
+<PRE>&lt;&lt;&nbsp; SQUARE +4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:2> 7 7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp;&nbsp;&nbsp; *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+
+<PRE>To go to the end of the current word, enter:</PRE>
+
+<UL>
+<PRE>g</PRE>
+</UL>
+
+<PRE>You should see:</PRE>
+
+<UL>
+<PRE>&lt;&lt;&nbsp; SQUARE +8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 49&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp;&nbsp;&nbsp; EXIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;
+&lt;&lt;&nbsp; TSQ +36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;10:1> 49&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ||&nbsp; .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >>&nbsp;&nbsp;&nbsp; ok</PRE>
+</UL>
+EXIT is compiled at the end of every Forth word. For more information on
+TRACE, enter TRACE.HELP:
+<UL>
+<PRE>TRACE&nbsp; ( i*x &lt;name> -- , setup trace for Forth word )
+S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( -- , step over )
+SM&nbsp;&nbsp;&nbsp;&nbsp; ( many -- , step over many times )
+SD&nbsp;&nbsp;&nbsp;&nbsp; ( -- , step down )
+G&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( -- , go to end of word )
+GD&nbsp;&nbsp;&nbsp;&nbsp; ( n -- , go down N levels from current level,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stop at end of this level )</PRE>
+</UL>
+
+<H3>
+<A NAME="Conditional Compilation [IF] [ELSE] [THEN]"></A>Conditional Compilation
+[IF] [ELSE] [THEN]</H3>
+PForth supports conditional compilation words similar to 'C''s #if, #else,
+and #endif.
+<DT>
+[IF] ( flag -- , if true, skip to [ELSE] or [THEN] )</DT>
+
+<DT>
+[ELSE] ( -- , skip to [THEN] )</DT>
+
+<DT>
+[THEN] ( -- , noop, used to terminate [IF] and [ELSE] section )</DT>
+
+<BR>&nbsp;
+<BR>For example:
+<UL>
+<PRE>TRUE constant USE_FRENCH
+
+USE_FRENCH&nbsp; [IF]
+&nbsp; : WELCOME&nbsp; ." Bienvenue!" cr ;
+[ELSE]
+&nbsp; : WELCOME&nbsp; ." Welcome!" cr ;
+[THEN]</PRE>
+</UL>
+Here is how to conditionally compile within a colon definition by using
+[ and ].
+<UL>
+<PRE>: DOIT&nbsp; ( -- )
+&nbsp;&nbsp;&nbsp; START.REACTOR
+&nbsp;&nbsp;&nbsp; IF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ USE_FRENCH [IF] ] ." Zut alors!"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ [ELSE] ] ." Uh oh!"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [THEN]
+&nbsp;&nbsp;&nbsp; THEN cr
+;</PRE>
+</UL>
+
+<H3>
+<A NAME="Miscellaneous Handy Words"></A>Miscellaneous Handy Words</H3>
+
+<DT>
+.HEX ( n -- , print N as hex number )</DT>
+
+<DT>
+CHOOSE ( n -- rand , select random number between 0 and N )</DT>
+
+<DT>
+MAP ( -- , print dictionary information )</DT>
+
+<H3>
+<A NAME="Local Variables { foo --}"></A>Local Variables { foo --}</H3>
+In a complicated Forth word it is sometimes hard to keep track of where
+things are on the stack. If you find you are doing a lot of stack operations
+like DUP SWAP ROT PICK etc. then you may want to use local variables. They
+can greatly simplify your code. You can declare local variables for a word
+using a syntax similar to the stack diagram. These variables will only
+be accessible within that word. Thus they are "local" as opposed to "global"
+like regular variables. Local variables are self-fetching. They automatically
+put their values on the stack when you give their name. You don't need
+to @ the contents. Local variables do not take up space in the dictionary.
+They reside on the return stack where space is made for them as needed.
+Words written with them can be reentrant and recursive.
+
+<P>Consider a word that calculates the difference of two squares, Here
+are two ways of writing the same word.
+<UL>
+<PRE>: DIFF.SQUARES ( A B -- A*A-B*B )&nbsp;
+&nbsp;&nbsp;&nbsp; DUP *&nbsp;
+&nbsp;&nbsp;&nbsp; SWAP DUP *&nbsp;
+&nbsp;&nbsp;&nbsp; SWAP -&nbsp;
+;&nbsp;
+&nbsp; ( or )&nbsp;
+: DIFF.SQUARES { A B -- A*A-B*B }&nbsp;
+&nbsp;&nbsp;&nbsp; A A *&nbsp;
+&nbsp;&nbsp;&nbsp; B B * -&nbsp;
+;&nbsp;
+3 2 DIFF.SQUARES&nbsp; ( would return 5 )</PRE>
+</UL>
+In the second definition of DIFF.SQUARES the curly bracket '{' told the
+compiler to start declaring local variables. Two locals were defined, A
+and B. The names could be as long as regular Forth words if desired. The
+"--" marked the end of the local variable list. When the word is executed,
+the values will automatically be pulled from the stack and placed in the
+local variables. When a local variable is executed it places its value
+on the stack instead of its address. This is called self-fetching. Since
+there is no address, you may wonder how you can store into a local variable.
+There is a special operator for local variables that does a store. It looks
+like -> and is pronounced "to".
+
+<P>Local variables need not be passed on the stack. You can declare a local
+variable by placing it after a "vertical bar" ( | )character. These are
+automatically set to zero when created. Here is a simple example that uses
+-> and | in a word:
+<UL>
+<PRE>: SHOW2*&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { loc1 | unvar --&nbsp; , 1 regular, 1 uninitialized }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOC1&nbsp; 2*&nbsp; ->&nbsp; UNVAR&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (set unver to 2*LOC1 )
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UNVAR&nbsp;&nbsp; .&nbsp;&nbsp; ( print UNVAR )
+;
+3 SHOW2*&nbsp;&nbsp; ( pass only 1 parameter, prints 6 )</PRE>
+</UL>
+Since local variable often used as counters or accumulators, we have a
+special operator for adding to a local variable It is +-> which is pronounced
+"plus to". These next two lines are functionally equivalent but the second
+line is faster and smaller:
+<UL>
+<PRE>ACCUM&nbsp;&nbsp; 10 +&nbsp;&nbsp; -> ACCUM
+10 +-> ACCUM</PRE>
+</UL>
+If you name a local variable the same as a Forth word in the dictionary,
+eg. INDEX or COUNT, you will be given a warning message. The local variable
+will still work but one could easily get confused so we warn you about
+this. Other errors that can occur include, missing a closing '}', missing
+'--', or having too many local variables.
+<H3>
+<A NAME="'C' like Structures. :STRUCT"></A>'C' like Structures. :STRUCT</H3>
+You can define 'C' like data structures in pForth using :STRUCT. For example:
+<UL>
+<PRE>:STRUCT&nbsp; SONG
+&nbsp;&nbsp;&nbsp; LONG&nbsp;&nbsp;&nbsp;&nbsp; SONG_NUMNOTES&nbsp; \ define 32 bit structure member named SONG_NUMNOTES
+&nbsp;&nbsp;&nbsp; SHORT&nbsp;&nbsp;&nbsp; SONG_SECONDS&nbsp;&nbsp; \ define 16 bit structure member
+&nbsp;&nbsp;&nbsp; BYTE&nbsp;&nbsp;&nbsp;&nbsp; SONG_QUALITY&nbsp;&nbsp; \ define 8 bit member
+&nbsp;&nbsp;&nbsp; LONG&nbsp;&nbsp;&nbsp;&nbsp; SONG_NUMBYTES&nbsp; \ auto aligns after SHORT or BYTE
+&nbsp;&nbsp;&nbsp; RPTR&nbsp;&nbsp;&nbsp;&nbsp; SONG_DATA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \ relocatable pointer to data
+;STRUCT</PRE>
+
+<PRE>SONG&nbsp; HAPPY&nbsp;&nbsp; \ define a song structure called happy</PRE>
+
+<PRE>400&nbsp; HAPPY&nbsp; S!&nbsp; SONG_NUMNOTES&nbsp; \ set number of notes to 400
+17&nbsp;&nbsp; HAPPY&nbsp; S!&nbsp; SONG_SECONDS&nbsp;&nbsp; \ S! works with all size members</PRE>
+
+<PRE>CREATE&nbsp; SONG-DATA&nbsp; 23 , 17 , 19 , 27 ,
+SONG-DATA&nbsp; HAPPY S! SONG_DATA&nbsp; \ store pointer in relocatable form</PRE>
+
+<PRE>HAPPY&nbsp; DST&nbsp; SONG&nbsp;&nbsp;&nbsp; \ dump HAPPY as a SONG structure</PRE>
+
+<PRE>HAPPY&nbsp;&nbsp; S@&nbsp; SONG_NUMNOTES .&nbsp; \ fetch numnotes and print</PRE>
+</UL>
+See the file "c_struct.fth" for more information.
+<H3>
+<A NAME="Vectorred Execution - DEFER"></A>Vectorred Execution - DEFER</H3>
+Using DEFER for vectored words. In Forth and other languages you can save
+the address of a function in a variable. You can later fetch from that
+variable and execute the function it points to.This is called vectored
+execution. PForth provides a tool that simplifies this process. You can
+define a word using DEFER. This word will contain the execution token of
+another Forth function. When you execute the deferred word, it will execute
+the function it points to. By changing the contents of this deferred word,
+you can change what it will do. There are several words that support this
+process.
+<DL>
+<DT>
+DEFER ( &lt;name> -- , define a deferred word )</DT>
+
+<DT>
+IS ( CFA &lt;name> -- , set the function for a deferred word )</DT>
+
+<DT>
+WHAT'S ( &lt;name> -- CFA , return the CFA set by IS )</DT>
+</DL>
+
+<DD>
+Simple way to see the name of what's in a deferred word:</DD>
+
+<UL>
+<UL>
+<PRE>WHAT'S EMIT >NAME ID.</PRE>
+</UL>
+</UL>
+
+<DD>
+should print name of current word that's in EMIT.</DD>
+
+<BR>&nbsp;
+<BR>Here is an example that uses a deferred word.
+<UL>
+<PRE>DEFER PRINTIT
+' . IS PRINTIT&nbsp;&nbsp; ( make PRINTIT use . )
+8 3 + PRINTIT
+
+: COUNTUP&nbsp; ( -- , call deferred word )
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ." Hit RETURN to stop!" CR
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ( first value )
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BEGIN 1+ DUP PRINTIT CR
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ?TERMINAL
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UNTIL
+;
+COUNTUP&nbsp; ( uses simple . )
+
+: FANCY.PRINT&nbsp; ( N -- , print in DECIMAL and HEX)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DUP ." DECIMAL = " .
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ." , HEX = " .HEX
+;
+' FANCY.PRINT&nbsp; IS PRINTIT&nbsp; ( change printit )
+WHAT'S PRINTIT >NAME ID. ( shows use of WHAT'S )
+8 3 + PRINTIT
+COUNTUP&nbsp; ( notice that it now uses FANCY.PRINT )</PRE>
+</UL>
+Many words in the system have been defined using DEFER which means that
+we can change how they work without recompiling the entire system. Here
+is a partial list of those words
+<UL>
+<PRE>ABORT EMIT NUMBER?</PRE>
+</UL>
+
+<H4>
+Potential Problems with Defer</H4>
+Deferred words are very handy to use, however, you must be careful with
+them. One problem that can occur is if you initialize a deferred system
+more than once. In the below example, suppose we called STUTTER twice.
+The first time we would save the original EMIT vector in OLD-EMIT and put
+in a new one. The second time we called it we would take our new function
+from EMIT and save it in OLD-EMIT overwriting what we had saved previously.
+Thus we would lose the original vector for EMIT . You can avoid this if
+you check to see whether you have already done the defer. Here's an example
+of this technique.
+<UL>
+<PRE>DEFER OLD-EMIT
+' QUIT&nbsp; IS OLD-EMIT&nbsp; ( set to known value )
+: EEMMIITT&nbsp; ( char --- , our fun EMIT )
+&nbsp;&nbsp;&nbsp; DUP OLD-EMIT OLD-EMIT
+;&nbsp;
+: STUTTER&nbsp;&nbsp; ( --- )
+&nbsp;&nbsp;&nbsp; WHAT'S OLD-EMIT&nbsp; 'C QUIT =&nbsp; ( still the same? )
+&nbsp;&nbsp;&nbsp; IF&nbsp; ( this must be the first time )
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHAT'S EMIT&nbsp; ( get the current value of EMIT )&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IS OLD-EMIT&nbsp; ( save this value in OLD-EMIT )&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'C EEMMIITT IS EMIT
+&nbsp;&nbsp;&nbsp; ELSE ."&nbsp; Attempt to STUTTER twice!" CR
+&nbsp;&nbsp;&nbsp; THEN
+;&nbsp;
+: STOP-IT!&nbsp; ( --- )
+&nbsp;&nbsp;&nbsp; WHAT'S OLD-EMIT ' QUIT =
+&nbsp;&nbsp;&nbsp; IF&nbsp; ." STUTTER not installed!" CR
+&nbsp;&nbsp;&nbsp; ELSE&nbsp; WHAT'S OLD-EMIT IS EMIT
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'C QUIT IS OLD-EMIT&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( reset to show termination )
+&nbsp;&nbsp;&nbsp; THEN
+;</PRE>
+</UL>
+In the above example, we could call STUTTER or STOP-IT! as many times as
+we want and still be safe.
+
+<P>Suppose you forget your word that EMIT now calls. As you compile new
+code you will overwrite the code that EMIT calls and it will crash miserably.
+You must reset any deferred words that call your code before you FORGET
+your code. The easiest way to do this is to use the word IF.FORGOTTEN to
+specify a cleanup word to be called if you ever FORGET the code in question.
+In the above example using EMIT , we could have said:
+<UL>
+<PRE>IF.FORGOTTEN STOP-IT!</PRE>
+</UL>
+
+<H3>
+<A NAME="Floating Point"></A>Floating Point</H3>
+PForth supports the FLOAT word set and much of the FLOATEXT word set as
+a compile time option.&nbsp; You can select single or double precision
+as the default by changing the typedef of PF_FLOAT.
+<DL>PForth has several options for floating point output.
+<DT>
+FS. ( r -f- , prints in scientific/exponential format )</DT>
+
+<DT>
+FE. ( r -f- , prints in engineering format, exponent if multiple of 3&nbsp;
+)</DT>
+
+<DT>
+FG. ( r -f- , prints in normal or exponential format depending on size
+)</DT>
+
+<DT>
+F. ( r -f- , as defined by the standard )</DT>
+
+<DT>
+Here is an example of output from each word for a number ranging from large
+to very small.</DT>
+
+<DL>
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp; FS.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FE.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FG.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F.
+1.234000e+12&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e+12&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+12&nbsp;&nbsp;&nbsp;&nbsp; 1234000000000.&nbsp;
+1.234000e+11&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+11&nbsp;&nbsp;&nbsp;&nbsp; 123400000000.&nbsp;
+1.234000e+10&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+10&nbsp;&nbsp;&nbsp;&nbsp; 12340000000.&nbsp;
+1.234000e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+09&nbsp;&nbsp;&nbsp;&nbsp; 1234000000.&nbsp;
+1.234000e+08&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+08&nbsp;&nbsp;&nbsp;&nbsp; 123400000.&nbsp;
+1.234000e+07&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234e+07&nbsp;&nbsp;&nbsp;&nbsp; 12340000.&nbsp;
+1.234000e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e+06&nbsp;&nbsp;&nbsp;&nbsp; 1234000.&nbsp;&nbsp;&nbsp;&nbsp; 1234000.&nbsp;
+1.234000e+05&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e+03&nbsp;&nbsp;&nbsp;&nbsp; 123400.&nbsp;&nbsp;&nbsp;&nbsp; 123400.0&nbsp;
+1.234000e+04&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e+03&nbsp;&nbsp;&nbsp;&nbsp; 12340.&nbsp;&nbsp;&nbsp;&nbsp; 12340.00&nbsp;
+1.234000e+03&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e+03&nbsp;&nbsp;&nbsp;&nbsp; 1234.&nbsp;&nbsp;&nbsp;&nbsp; 1234.000&nbsp;
+1.234000e+02&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e+00&nbsp;&nbsp;&nbsp;&nbsp; 123.4&nbsp;&nbsp;&nbsp;&nbsp; 123.4000&nbsp;
+1.234000e+01&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e+00&nbsp;&nbsp;&nbsp;&nbsp; 12.34&nbsp;&nbsp;&nbsp;&nbsp; 12.34000&nbsp;
+1.234000e+00&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e+00&nbsp;&nbsp;&nbsp;&nbsp; 1.234&nbsp;&nbsp;&nbsp;&nbsp; 1.234000&nbsp;
+1.234000e-01&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.1234&nbsp;&nbsp;&nbsp;&nbsp; 0.1234000&nbsp;
+1.234000e-02&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.01234&nbsp;&nbsp;&nbsp;&nbsp; 0.0123400&nbsp;
+1.234000e-03&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.001234&nbsp;&nbsp;&nbsp;&nbsp; 0.0012340&nbsp;
+1.234000e-04&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e-06&nbsp;&nbsp;&nbsp;&nbsp; 0.0001234&nbsp;&nbsp;&nbsp;&nbsp; 0.0001234&nbsp;
+1.234000e-05&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-05&nbsp;&nbsp;&nbsp;&nbsp; 0.0000123&nbsp;
+1.234000e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-06&nbsp;&nbsp;&nbsp;&nbsp; 0.0000012&nbsp;
+1.234000e-07&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-07&nbsp;&nbsp;&nbsp;&nbsp; 0.0000001&nbsp;
+1.234000e-08&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-08&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234000e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234000e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-09&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234000e-10&nbsp;&nbsp;&nbsp;&nbsp; 123.4000e-12&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-10&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234000e-11&nbsp;&nbsp;&nbsp;&nbsp; 12.34000e-12&nbsp;&nbsp;&nbsp;&nbsp; 1.234e-11&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000
+
+1.234568e+12&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+12&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+12&nbsp;&nbsp;&nbsp;&nbsp; 1234567890000.&nbsp;
+1.234568e+11&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+11&nbsp;&nbsp;&nbsp;&nbsp; 123456789000.&nbsp;
+1.234568e+10&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+10&nbsp;&nbsp;&nbsp;&nbsp; 12345678900.&nbsp;
+1.234568e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+09&nbsp;&nbsp;&nbsp;&nbsp; 1234567890.&nbsp;
+1.234568e+08&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+08&nbsp;&nbsp;&nbsp;&nbsp; 123456789.&nbsp;
+1.234568e+07&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+07&nbsp;&nbsp;&nbsp;&nbsp; 12345679.&nbsp;
+1.234568e+06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+06&nbsp;&nbsp;&nbsp;&nbsp; 1234568.&nbsp;&nbsp;&nbsp;&nbsp; 1234568.&nbsp;
+1.234568e+05&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e+03&nbsp;&nbsp;&nbsp;&nbsp; 123456.8&nbsp;&nbsp;&nbsp;&nbsp; 123456.8&nbsp;
+1.234568e+04&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e+03&nbsp;&nbsp;&nbsp;&nbsp; 12345.68&nbsp;&nbsp;&nbsp;&nbsp; 12345.68&nbsp;
+1.234568e+03&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+03&nbsp;&nbsp;&nbsp;&nbsp; 1234.568&nbsp;&nbsp;&nbsp;&nbsp; 1234.568&nbsp;
+1.234568e+02&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e+00&nbsp;&nbsp;&nbsp;&nbsp; 123.4568&nbsp;&nbsp;&nbsp;&nbsp; 123.4568&nbsp;
+1.234568e+01&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e+00&nbsp;&nbsp;&nbsp;&nbsp; 12.34568&nbsp;&nbsp;&nbsp;&nbsp; 12.34568&nbsp;
+1.234568e+00&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e+00&nbsp;&nbsp;&nbsp;&nbsp; 1.234568&nbsp;&nbsp;&nbsp;&nbsp; 1.234568&nbsp;
+1.234568e-01&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.1234568&nbsp;&nbsp;&nbsp;&nbsp; 0.1234568&nbsp;
+1.234568e-02&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.01234568&nbsp;&nbsp;&nbsp;&nbsp; 0.0123456&nbsp;
+1.234568e-03&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-03&nbsp;&nbsp;&nbsp;&nbsp; 0.001234568&nbsp;&nbsp;&nbsp;&nbsp; 0.0012345&nbsp;
+1.234568e-04&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e-06&nbsp;&nbsp;&nbsp;&nbsp; 0.0001234568&nbsp;&nbsp;&nbsp;&nbsp; 0.0001234&nbsp;
+1.234568e-05&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-05&nbsp;&nbsp;&nbsp;&nbsp; 0.0000123&nbsp;
+1.234568e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-06&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-06&nbsp;&nbsp;&nbsp;&nbsp; 0.0000012&nbsp;
+1.234568e-07&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-07&nbsp;&nbsp;&nbsp;&nbsp; 0.0000001&nbsp;
+1.234568e-08&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-08&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234568e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-09&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-09&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234568e-10&nbsp;&nbsp;&nbsp;&nbsp; 123.4568e-12&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-10&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000&nbsp;
+1.234568e-11&nbsp;&nbsp;&nbsp;&nbsp; 12.34568e-12&nbsp;&nbsp;&nbsp;&nbsp; 1.234568e-11&nbsp;&nbsp;&nbsp;&nbsp; 0.0000000</PRE>
+</DL>
+</DL>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<H2>
+<A NAME="pForth Design"></A>pForth Design</H2>
+
+<H3>
+<A NAME="'C' kernel"></A>'C' kernel</H3>
+The pForth kernel is written in 'C' for portability. The inner interpreter
+is implemented in the function ExecuteToken() which is in pf_inner.c.
+<UL>
+<PRE>void pfExecuteToken( ExecToken XT );</PRE>
+</UL>
+It is passed an execution token the same as EXECUTE would accept. It handles
+threading of secondaries and also has a large switch() case statement to
+interpret primitives. It is in one huge routine to take advantage of register
+variables, and to reduce calling overhead. Hopefully, your compiler will
+optimise the switch() statement into a jump table so it will run fast.
+<H3>
+<A NAME="Dictionary Structures"></A>Dictionary Structures</H3>
+This Forth supports multiple dictionaries. Each dictionary consists of
+a header segment and a seperate code segment. The header segment contains
+link fields and names. The code segment contains tokens and data. The headers,
+as well as some entire dictionaries such as the compiler support words,
+can be discarded when creating a stand-alone app.
+
+<P>[NOT IMPLEMENTED] Dictionaries can be split so that the compile time
+words can be placed above the main dictionary. Thus they can use the same
+relative addressing but be discarded when turnkeying.
+
+<P>Execution tokens are either an index of a primitive ( n &lt; NUM_PRIMITIVES),
+or the offset of a secondary in the code segment. ( n >= NUM_PRIMITIVES
+)
+
+<P>The NAME HEADER portion of the dictionary contains a structure for each
+named word in the dictionary. It contains the following fields:
+<UL>
+<PRE>bytes 4 Link Field relative address of previous name header
+4 Code Pointer relative address of corresponding code
+n Name Field name as counted string Headers are quad byte aligned.</PRE>
+</UL>
+The CODE portion of the dictionary consists of the following structures:
+<H4>
+Primitive</H4>
+No Forth code. 'C' code in "pf_inner.c".
+<H4>
+Secondary</H4>
+
+<UL>
+<PRE>4*n Parameter Field execution tokens
+4 ID_NEXT = 0 terminates secondary</PRE>
+</UL>
+
+<H4>
+CREATE DOES></H4>
+
+<UL>
+<PRE>4 ID_CREATE_P token
+4 Token for optional DOES> code, OR ID_NEXT = 0
+4 ID_NEXT = 0
+n Body = arbitrary data</PRE>
+</UL>
+
+<H4>
+Deferred Word</H4>
+
+<UL>
+<PRE>4 ID_DEFER_P same action as ID_NOOP, identifies deferred words
+4 Execution Token of word to execute.
+4 ID_NEXT = 0</PRE>
+</UL>
+
+<H4>
+Call to custom 'C' function.</H4>
+
+<UL>
+<PRE>4 ID_CALL_C
+4 Pack C Call Info Bits</PRE>
+
+<UL>
+<PRE>0-15 = Function Index Bits
+16-23 = FunctionTable Index (Unused) Bits
+24-30 = NumParams Bit
+31 = 1 if function returns value</PRE>
+</UL>
+
+<PRE>4 ID_NEXT = 0</PRE>
+</UL>
+
+<HR WIDTH="100%">
+<H2>
+<A NAME="Custom Compilation of pForth"></A>Custom Compilation of pForth</H2>
+
+<H3>
+<A NAME="Compiler Options"></A>Compiler Options</H3>
+There are several versions of PForth that can be built. By default, the
+full kernel will be built. For custom builds, define the following options
+in the Makefile before compiling the 'C' code:
+
+<P>PF_NO_INIT
+<UL>Don't compile the code used to initially build the dictionary. This
+can be used to save space if you already have a prebuilt dictionary.</UL>
+PF_NO_SHELL
+<UL>Don't compile the outer interpreter and Forth compiler. This can be
+used with Cloned dictionaries.</UL>
+PF_NO_MALLOC
+<UL>Replace malloc() and free() function with pForth's own version. See
+pf_mem.c for more details.</UL>
+PF_USER_MALLOC='"filename.h"'
+<UL>Replace malloc() and free() function with users custom version. See
+pf_mem.h for details.</UL>
+PF_MEM_POOL_SIZE=numbytes
+<UL>Size of array in bytes used by pForth custom allocator.</UL>
+PF_NO_GLOBAL_INIT
+<UL>Define this if you want pForth to not rely on initialization of global
+variables by the loader. This may be required for some embedded systems
+that may not have a fully functioning loader.&nbsp; Take a look in "pfcustom.c"
+for an example of its use.</UL>
+PF_USER_INC1='"filename.h"'
+<UL>File to include BEFORE other include files. Generally set to host dependent
+files such as "pf_mac.h".</UL>
+PF_USER_INC2='"filename.h"'
+<UL>File to include AFTER other include files. Generally used to #undef
+and re#define symbols. See "pf_win32.h" for an example.</UL>
+PF_NO_CLIB
+<UL>Replace 'C' lib calls like toupper and memcpy with pForth's own version.
+This is useful for embedded systems.</UL>
+PF_USER_CLIB='"filename.h"'
+<UL>Rreplace 'C' lib calls like toupper and memcpy with users custom version.
+See pf_clib.h for details.</UL>
+PF_NO_FILEIO
+<UL>System does not support standard file I/O so stub it out. Setting this
+flag will automatically set PF_STATIC_DIC.</UL>
+PF_USER_CHARIO='"filename.h"'
+<UL>Replace stdio terminal calls like getchar() and putchar() with users
+custom version. See pf_io.h for details.</UL>
+PF_USER_FILEIO='"filename.h"'
+<UL>Replace stdio file calls like fopen and fread with users custom version.
+See pf_io.h for details.</UL>
+PF_USER_FLOAT='"filename.h"'
+<UL>Replace floating point math calls like sin and pow with users custom
+version. Also defines PF_FLOAT.</UL>
+PF_USER_INIT=MyInit()
+<UL>Call a user defined initialization function that returns a negative
+error code if it fails.</UL>
+PF_USER_TERM=MyTerm()
+<UL>Call a user defined void termination function.</UL>
+PF_STATIC_DIC
+<UL>Compile in static dictionary instead of loading dictionary. from file.
+Use "utils/savedicd.fth" to save a dictionary as 'C' source code in a file
+called "pfdicdat.h".</UL>
+PF_SUPPORT_FP
+<UL>Compile ANSI floating point support.</UL>
+
+<H3>
+<A NAME="Building pForth on Supported Hosts"></A>Building pForth on Supported
+Hosts</H3>
+To build on UNIX, do nothing, system will default to "pf_unix.h".
+
+<P>To build on Macintosh:
+<UL>
+<PRE>-DPF_USER_INC1='"pf_mac.h"'</PRE>
+</UL>
+To build on PCs:
+<UL>
+<PRE>-DPF_USER_INC2='"pf_win32.h"'</PRE>
+</UL>
+To build a system that only runs turnkey or cloned binaries:
+<UL>
+<PRE>-DPF_NO_INIT -DPF_NO_SHELL</PRE>
+</UL>
+
+<H3>
+<A NAME="Compiling for Embedded Systems"></A>Compiling for Embedded Systems</H3>
+You may want to create a version of pForth that can be run on a small system
+that does not support file I/O. This is useful when bringing up new computer
+systems. On UNIX systems, you can use the supplied gmake target. Simply
+enter:
+<UL>
+<PRE>gmake pfemb</PRE>
+</UL>
+For other systems, here are the steps to create an embedded pForth.
+<OL>
+<LI>
+Determine whether your target system has a different endian-ness than your
+host system.&nbsp; If the address of a long word is the address of the
+most significant byte, then it is "big endian". Examples of big endian
+processors are Sparc, Motorola 680x0 and PowerPC60x.&nbsp; If the address
+of a long word is the address of the lest significant byte, then it is
+"Little Endian". Examples of little endian processors are Intel 8088 and
+derivatives such as the Intel Pentium.</LI>
+
+<LI>
+If your target system has a different endian-ness than your host system,
+then you must compile a version of pForth for your host that matches the
+target.&nbsp; Rebuild pForth with either PF_BIG_ENDIAN_DIC or PF_LITTLE_ENDIAN_DIC
+defined.&nbsp; You will need to rebuild pforth.dic as well as the executable
+Forth.&nbsp; If you do not specify one of these variables, then the dictionary
+will match the native endian-ness of the processor (and run faster as a
+result).</LI>
+
+<LI>
+Execute pForth. Notice the message regarding the endian-ness of the dictionary.</LI>
+
+<LI>
+Compile your custom Forth words on the host development system.</LI>
+
+<LI>
+Compile the pForth utulity "utils/savedicd.fth".</LI>
+
+<LI>
+Enter in pForth: SDAD</LI>
+
+<LI>
+SDAD will generate a file called "pfdicdat.h" that contains your dictionary
+in source code form.</LI>
+
+<LI>
+Rewrite the character primitives sdTerminalOut(), sdTerminalIn() and sdTerminalFlush()
+defined in pf_io.h to use your new computers communications port.</LI>
+
+<LI>
+Write a "user_chario.h" file based on the API defined in "pf_io.h".</LI>
+
+<LI>
+Compile a new version of pForth for your target machine with the following
+options:</LI>
+
+<OL>
+<PRE>-DPF_NO_INIT -DPF_NO_MALLOC -DPF_NO_FILEIO \
+-DPF_USER_CHARIO="user_chario.h" \
+-DPF_NO_CLIB -DPF_STATIC_DIC</PRE>
+</OL>
+
+<LI>
+The file "pfdicdat.h" will be compiled into this executable and your dictionary
+will thus be included in the pForth executable as a static array.</LI>
+
+<LI>
+Burn a ROM with your new pForth and run it on your target machine.</LI>
+
+<LI>
+If you compiled a version of pForth with different endian-ness than your
+host system, do not use it for daily operation because it will be much
+slower than a native version.</LI>
+</OL>
+
+<H3>
+<A NAME="Linking with Custom 'C' Functions"></A>Linking with Custom 'C'
+Functions</H3>
+You can call the pForth interpreter as an embedded tool in a 'C' application.
+For an example of this, see the file pf_main.c. This application does nothing
+but load the dictionary and call the pForth interpreter.
+
+<P>You can call 'C' from pForth by adding your own custom 'C' functions
+to a dispatch table, and then adding Forth words to the dictionary that
+call those functions. See the file "pfcustom.c" for more information.
+<H3>
+<A NAME="Testing your Compiled pForth"></A>Testing your Compiled pForth</H3>
+Once you have compiled pForth, you can test it using the small verification
+suite we provide.&nbsp; The first test you should run was written by John
+Hayes at John Hopkins University.&nbsp; Enter:
+<UL>
+<PRE>pforth
+include tester.fth
+include coretest.fth
+bye</PRE>
+</UL>
+The output will be self explanatory.&nbsp; There are also a number of tests
+that I have added that print the number of successes and failures. Enter:
+<UL>
+<PRE>pforth t_corex.fth
+pforth t_locals.fth
+pforth t_strings.fth
+pforth t_floats.ft</PRE>
+</UL>
+Note that t_corex.fth reveals an expected error because SAVE-INPUT is not
+fully implemented. (FIXME)
+<BR>
+<HR WIDTH="100%">
+<BR>PForth source code is freely available.&nbsp; The author is available
+for customization of pForth, porting to new platforms, or developing pForth
+applications on a contractual basis.&nbsp; If interested, contact&nbsp;
+Phil Burk at <A HREF="mailto:philburk@softsynth.com">philburk@softsynth.com</A>
+
+<P>Back to <A HREF="pforth.html">pForth Home Page</A>
+</BODY>
+</HTML>

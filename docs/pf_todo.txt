@@ -1,0 +1,116 @@
+\ %Z% %M% %E% %I%
+File: pf_todo.txt
+
+To Do --------------------------------------------------------
+
+User Requests
+
+Peter Verbeke & Carmen Lams <peter@arrow.demon.nl>
+ search wordset, float ext wordset , file wordset
+ 
+BUGS
+
+O- Fix NUMBER? in tutorial
+
+HIGH
+X- Add compile time selection for LittleEndian, BigEndian, or native dictionaries.
+X- detect and report endian conflicts in dictionary.
+O- add deferred user break to trace, allow stop, dump 
+O- document more glossary words in pf_glos.htm
+O- pfInit() pfTerm(), pfTask()
+O- note that Special Feature" are the non-ANS words in document
+O- document stack diagram of words used with if.forgotten 
+X- make sure "binary -1 u." is fixed, is string long enough?
+
+MEDIUM
+O- fix SAVE-INPUT and RESTORE-INPUT
+O- add ENVIRONMENT?
+O- fix t_corex.fth failures
+O- go through ANSI and add what's missing
+O- support more word sets
+O- support ANSI error codes
+O- add INCLUDED
+O- add better command line support, -d -e"commands" -i -b
+O- document all non-standard words
+O- review tutorial and docs
+
+LOW
+O- primitive that accepts, SP RSP and CFA, returns SP' and RSP'
+O- merge (LEAVE) and UNLOOP
+O- clear data stack in ABORT
+O- resolve problems with EOL in WORD
+
+O- integrate SAVE-FORTH, SDAD, and CLONE
+O- simplify dictionary management so that globals are tracked better
+O- move globals into task data structure
+
+O- research ROM requirements
+O- clean up C call mechanism
+O- research byte size tokens
+O- execute Forth QUIT automatically
+
+Maybe Do ---------
+O- defer interpret
+
+Done -------------
+V19
+X- warn if local name matches dictionary, : foo { count -- } ;
+X- TO -> and +-> now parse input stream. No longer use to-flag.
+X- TO -> and +-> now give error if used with non-immediate word.
+X- high level trace tool with step, alternative stack
+X- ?TERMINAL stub for embedded machines
+X- FIXED memory leak in pfDoForth()
+X- Add PF_USER_INIT for custom initialization.
+X- remove MM.FREE from docs
+X- include trace in normal release and document
+
+
+V18
+X- Make FILL a 'C' primitive.
+X- optimized locals with (1_LOCAL@)
+X- optimized inner interpreter by 15%
+X- fix tester.fth failures
+X- Added define for PF_KEY_ECHOS which turns off echo in ACCEPT if defined.
+X- Fixed MARKER. Was equivalent to ANEW instead of proper ANS definition.
+X- Fixed saving and restoring of TIB when nesting include files.
+
+V16
+X- add dictionary room to MAP command
+X- fix UM/MOD
+X- corex to kernel
+X- COMPARE to kernel
+X- integrate CATCH with ABORT and INTERPRET
+X- add WORDS.LIKE
+X- add list and description of files to README
+X- get floats to work with :STRUCT and FLPT
+X- add PD disclaimers to Forth code
+X- make script to build release package for UNIX/Mac
+X- clean up source files
+X- bump version number
+X- add PD disclaimers to 'C' code
+X- conditionally compile modes: full_build, compiler, turnkey
+X- save as turnkey or dev mode
+X- eliminate reliance on printf() for embedded systems
+X- funnel ALL I/O through pf_io.c
+X- add LoadDictionary
+X- add SAVEFORTH
+X- Add numeric entry
+X-   call deferred word from Interpret
+X- Create Does
+X- Branch, 0branch
+X- add decimal numeric output
+X- add "OK"
+X- FIX EMIT !!!!! defer problem?!
+X-   try to load dspp_asm.fth
+X- dictionary traversal, nfa->ffa
+X- fix BYE
+X- add CATCH and THROW
+X- REFILL
+X- SOURCE-ID
+X- EVALUATE
+X- push and pop source-id
+X- make .S deferred, redefine using current base
+X- revise trace to use level, stack trace
+X- allow minnamesize and mincodesize on save
+X- handle decimal point for double precision words.
+
