@@ -15,6 +15,7 @@ On Linux (s390x or ppc64):
     ./build4th.sh
 
 This should build pforth in the current directory that you can run with
+
     ./pforth
     
 On VM/370:
