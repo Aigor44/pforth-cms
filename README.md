@@ -20,19 +20,19 @@ This should build pforth in the current directory that you can run with
     
 On VM/370:
 
-    You can copy ./csrc/pforth.vmarc to VM/370 using IND$FILE
+You can copy ./csrc/pforth.vmarc to VM/370 using IND$FILE
 
-    I use the disk D as a scratch development disk so I do as follow.
+I use the disk D as a scratch development disk so I do as follow.
     
     ERASE * * D1
     VMARC UNPACK PFORTH VMARC A * * D
     BUILD4th
     
-    If the build is successfoul you shoud have
+If the build is successfoul you shoud have
     
     PFORTH MODULE D
     
-    that you can run with
+that you can run with
     
     PFORTH
 
