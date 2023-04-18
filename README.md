@@ -1,4 +1,4 @@
-# PForth-CMS - a Portable ANS-like Forth for VM/370 written in C
+# PForth-CMS - Portable ANS-like Forth for VM/370
 
 Last updated: 18.04.2023
 
