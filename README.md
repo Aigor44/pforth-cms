@@ -28,7 +28,7 @@ I use the disk D as a scratch development disk so I do as follow.
     VMARC UNPACK PFORTH VMARC A * * D
     BUILD4th
     
-If the build is successfoul you shoud have
+If the build is successful you shoud have
     
     PFORTH MODULE D
     
