@@ -8,7 +8,7 @@ Recently I rediscovered the sources and adapted the port to VM/370's GCCCMS comp
 ------
 
 ### Images
-![](./pforth-vm370-09.png)
+![](./images/pforth-vm370-09.png)
 
 
 
