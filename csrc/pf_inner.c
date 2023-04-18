@@ -1465,11 +1465,7 @@ DBUG(("XX ah,m,l = 0x%8x,%8x,%8x - qh,l = 0x%8x,%8x\n", ah,am,al, qh,ql ));
             
         case ID_TYPE:
             Scratch = M_POP; /* addr */
-#ifdef __CMS__
-            ioTypeE( (char *) Scratch, TOS );
-#else
             ioType( (char *) Scratch, TOS );
-#endif
             M_DROP;
             endcase;
  
