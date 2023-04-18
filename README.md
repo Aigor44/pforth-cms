@@ -9,7 +9,7 @@ Recently I rediscovered the sources and adapted the port to VM/370's GCCCMS comp
 
 You need a Big-Endian platform to build PFORTH-CMS.
 
-On Linux (s390x or ppc64):
+On Linux (s390x or powerpc):
 
     cd csrc
     ./build4th.sh
